@@ -1,0 +1,1285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Super Mall — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --primary-light: #8b5cf6;
+      --secondary: #06d6a0;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --gray-light: #cbd5e1;
+      --gray-lighter: #f1f5f9;
+      --white: #ffffff;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    header h1 i {
+      font-size: 24px;
+    }
+    
+    .logout-btn {
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--white);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--white);
+    }
+    
+    .stat-icon.users { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+    .stat-icon.products { background: linear-gradient(135deg, #06d6a0, #0ea5e9); }
+    .stat-icon.shops { background: linear-gradient(135deg, #f59e0b, #f97316); }
+    .stat-icon.sales { background: linear-gradient(135deg, #ef4444, #ec4899); }
+    
+    .stat-info h3 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 4px 0 0 0;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: var(--white);
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      background: var(--gray-lighter);
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .tab:hover {
+      background: var(--primary-light);
+      color: var(--white);
+    }
+    
+    .tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    .view {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .view-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-lighter);
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    }
+    
+    .view-header h2 {
+      margin: 0;
+      color: var(--dark);
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .search-input, .filter-select {
+      padding: 12px 16px;
+      border: 2px solid var(--gray-lighter);
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      min-width: 200px;
+    }
+    
+    .search-input:focus, .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--white);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: var(--white);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger), #dc2626);
+      color: var(--white);
+    }
+    
+    .btn-warning {
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      color: var(--white);
+    }
+    
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 24px;
+    }
+    
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid var(--gray-lighter);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .card-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-bottom: 1px solid var(--gray-lighter);
+    }
+    
+    .card-header h3 {
+      margin: 0;
+      color: var(--dark);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .meta {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    
+    .meta strong {
+      color: var(--dark);
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 24px;
+    }
+    
+    .form-section {
+      background: var(--gray-lighter);
+      padding: 24px;
+      border-radius: 12px;
+    }
+    
+    .form-section h3 {
+      margin: 0 0 20px 0;
+      color: var(--dark);
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .form-col {
+      flex: 1;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-light);
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+    
+    .manage-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .manage-item {
+      padding: 16px;
+      border: 1px solid var(--gray-lighter);
+      border-radius: 12px;
+      background: var(--white);
+      transition: all 0.3s ease;
+    }
+    
+    .manage-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+    }
+    
+    .category-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background: var(--success);
+      color: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .toast.show { transform: translateX(0); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); }
+    
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .user-role {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .role-admin { background: var(--primary); color: white; }
+    .role-user { background: var(--success); color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-store"></i> Super Mall — Admin Portal</h1>
+    <button class="logout-btn" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </header>
+
+  <div class="container">
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div class="stat-icon users">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Total Users</h3>
+          <div class="stat-number" id="totalUsers">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon products">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Total Products</h3>
+          <div class="stat-number" id="totalProducts">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon shops">
+          <i class="fas fa-store-alt"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Active Shops</h3>
+          <div class="stat-number" id="totalShops">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon sales">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Today's Sales</h3>
+          <div class="stat-number">₹12,458</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+      <div class="tab active" id="tabDashboard">
+        <i class="fas fa-chart-pie"></i> Dashboard
+      </div>
+      <div class="tab" id="tabUsers">
+        <i class="fas fa-users"></i> Users
+      </div>
+      <div class="tab" id="tabProducts">
+        <i class="fas fa-shopping-bag"></i> Products
+      </div>
+      <div class="tab" id="tabManage">
+        <i class="fas fa-edit"></i> Manage Products
+      </div>
+      <div class="tab" id="tabUserManage">
+        <i class="fas fa-user-cog"></i> User Management
+      </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboardView" class="view">
+      <div class="view-header">
+        <h2><i class="fas fa-chart-pie"></i> Admin Dashboard</h2>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3>Quick Actions</h3>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; gap: 12px;">
+              <button class="btn btn-primary" onclick="showView('usersView')">
+                <i class="fas fa-users"></i> Manage Users
+              </button>
+              <button class="btn btn-success" onclick="showView('productsView')">
+                <i class="fas fa-shopping-bag"></i> View Products
+              </button>
+              <button class="btn btn-warning" onclick="showView('manageView')">
+                <i class="fas fa-plus"></i> Add New Product
+              </button>
+              <button class="btn btn-primary" onclick="showView('userManageView')">
+                <i class="fas fa-user-cog"></i> User Management
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Activity</h3>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-lighter);">
+                <span>New user registered</span>
+                <small style="color: var(--gray);">2 min ago</small>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-lighter);">
+                <span>Product added to S001</span>
+                <small style="color: var(--gray);">5 min ago</small>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-lighter);">
+                <span>Shop S002 updated</span>
+                <small style="color: var(--gray);">10 min ago</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS VIEW -->
+    <div id="usersView" class="view" style="display:none">
+      <div class="view-header">
+        <h2><i class="fas fa-users"></i> Shop Users</h2>
+      </div>
+      <div class="controls" style="padding: 0 24px; margin-top: 20px;">
+        <input type="text" class="search-input" id="searchUser" placeholder="Search users by name, email, or shop no..." />
+        <button class="btn btn-primary" onclick="refreshAll()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <div class="card-grid" id="userList"></div>
+    </div>
+
+    <!-- PRODUCTS VIEW -->
+    <div id="productsView" class="view" style="display:none">
+      <div class="view-header">
+        <h2><i class="fas fa-shopping-bag"></i> All Products</h2>
+      </div>
+      <div class="controls" style="padding: 0 24px; margin-top: 20px;">
+        <select class="filter-select" id="filterShop">
+          <option value="">All Shops</option>
+        </select>
+        <input type="text" class="search-input" id="searchProduct" placeholder="Search product name..." />
+        <button class="btn btn-primary" onclick="refreshAll()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <div class="card-grid" id="productList"></div>
+    </div>
+
+    <!-- MANAGE PRODUCTS VIEW -->
+    <div id="manageView" class="view" style="display:none">
+      <div class="view-header">
+        <h2><i class="fas fa-edit"></i> Product Management</h2>
+      </div>
+      <div class="form-grid">
+        <div class="form-section">
+          <h3><i class="fas fa-plus-circle"></i> Create / Edit Product</h3>
+          <form id="productForm">
+            <input type="hidden" id="manageProductId">
+            <div class="form-row">
+              <div class="form-col">
+                <input type="text" class="form-input" id="manageProductName" placeholder="Product name" required>
+              </div>
+              <div class="form-col">
+                <input type="number" class="form-input" id="manageProductPrice" placeholder="Price" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <select class="form-input" id="manageProductShop" required>
+                  <option value="">Select Shop</option>
+                </select>
+              </div>
+              <div class="form-col">
+                <input type="text" class="form-input" id="manageProductCategory" placeholder="Category (optional)">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <textarea class="form-input" id="manageProductDescription" placeholder="Product description (optional)" rows="3"></textarea>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px; margin-top: 20px;">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save Product
+              </button>
+              <button type="button" class="btn btn-warning" onclick="clearManageForm()">
+                <i class="fas fa-times"></i> Clear
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h3><i class="fas fa-list"></i> Existing Products</h3>
+          <div id="manageList" class="manage-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER MANAGEMENT VIEW -->
+    <div id="userManageView" class="view" style="display:none">
+      <div class="view-header">
+        <h2><i class="fas fa-user-cog"></i> User Management</h2>
+      </div>
+      <div class="form-grid">
+        <div class="form-section">
+          <h3><i class="fas fa-user-plus"></i> Add New User</h3>
+          <form id="userForm">
+            <input type="hidden" id="manageUserId">
+            <div class="form-row">
+              <div class="form-col">
+                <input type="text" class="form-input" id="manageUserName" placeholder="Full name" required>
+              </div>
+              <div class="form-col">
+                <input type="email" class="form-input" id="manageUserEmail" placeholder="Email address" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <input type="text" class="form-input" id="manageUserShop" placeholder="Shop number (S001)" required>
+              </div>
+              <div class="form-col">
+                <input type="password" class="form-input" id="manageUserPassword" placeholder="Password" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <select class="form-input" id="manageUserRole" required>
+                  <option value="user">Merchant</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px; margin-top: 20px;">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save User
+              </button>
+              <button type="button" class="btn btn-warning" onclick="clearUserForm()">
+                <i class="fas fa-times"></i> Clear
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h3><i class="fas fa-users"></i> All Users</h3>
+          <div id="userManageList" class="manage-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Real product data for shopping mall
+const realProductsData = {
+  clothing: [
+    { name: "Men's Cotton T-Shirt", price: 599, category: "Clothing" },
+    { name: "Women's Denim Jacket", price: 1899, category: "Clothing" },
+    { name: "Kids Summer Dress", price: 899, category: "Clothing" },
+    { name: "Sports Running Shoes", price: 2499, category: "Footwear" },
+    { name: "Winter Wool Sweater", price: 1599, category: "Clothing" },
+    { name: "Designer Jeans", price: 1299, category: "Clothing" },
+    { name: "Silk Scarf", price: 699, category: "Accessories" }
+  ],
+  electronics: [
+    { name: "Wireless Bluetooth Earbuds", price: 1999, category: "Electronics" },
+    { name: "Smartphone Case", price: 499, category: "Accessories" },
+    { name: "Portable Power Bank", price: 1299, category: "Electronics" },
+    { name: "USB-C Charging Cable", price: 299, category: "Electronics" },
+    { name: "Phone Screen Protector", price: 199, category: "Accessories" },
+    { name: "Smart Watch", price: 4599, category: "Electronics" },
+    { name: "Wireless Mouse", price: 799, category: "Electronics" }
+  ],
+  food: [
+    { name: "Fresh Chocolate Cake", price: 449, category: "Bakery" },
+    { name: "Gourmet Coffee Beans", price: 699, category: "Beverages" },
+    { name: "Artisan Bread Loaf", price: 199, category: "Bakery" },
+    { name: "Organic Fruit Juice", price: 149, category: "Beverages" },
+    { name: "Premium Tea Collection", price: 599, category: "Beverages" },
+    { name: "Fresh Croissants", price: 249, category: "Bakery" },
+    { name: "Italian Pasta", price: 399, category: "Grocery" }
+  ],
+  accessories: [
+    { name: "Leather Wallet", price: 799, category: "Accessories" },
+    { name: "Sunglasses", price: 1299, category: "Accessories" },
+    { name: "Stainless Steel Watch", price: 2999, category: "Accessories" },
+    { name: "Designer Handbag", price: 4599, category: "Accessories" },
+    { name: "Pearl Necklace", price: 1899, category: "Jewelry" },
+    { name: "Leather Belt", price: 599, category: "Accessories" },
+    { name: "Silver Bracelet", price: 1299, category: "Jewelry" }
+  ]
+};
+
+// Authentication check
+(function checkAuth() {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  if (!loggedInUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  const user = JSON.parse(loggedInUser);
+  if (user.role !== 'admin') {
+    alert('Access denied. Admin privileges required.');
+    window.location.href = 'user-dashboard.html';
+    return;
+  }
+})();
+
+function logout(){
+  localStorage.removeItem('loggedInUser');
+  window.location.href='login.html';
+}
+
+function readUsers(){ 
+  return JSON.parse(localStorage.getItem('mockUsers')) || []; 
+}
+function saveUsers(u){ 
+  localStorage.setItem('mockUsers', JSON.stringify(u)); 
+}
+function readProducts(){ 
+  return JSON.parse(localStorage.getItem('mockProducts')) || []; 
+}
+function saveProducts(p){ 
+  localStorage.setItem('mockProducts', JSON.stringify(p)); 
+}
+
+// Ensure admin user exists
+(function ensureAdmin(){
+  let users = readUsers();
+  if(!users.find(x=>x.email==='admin@supermall.com')){
+    users.unshift({
+      uid: 'admin_001',
+      name: 'Super Admin',
+      email: 'admin@supermall.com',
+      password: 'admin123',
+      role: 'admin',
+      shopNumber: 'ADMIN'
+    });
+    saveUsers(users);
+  }
+})();
+
+// Ensure every user has shopNumber and create real products for shops that don't have products
+(function ensureShopNumbersAndRealProducts(){
+  let users = readUsers();
+  let products = readProducts();
+  let changed=false;
+
+  users = users.map((u,i)=>{
+    if(!u.shopNumber || u.shopNumber===''){
+      u.shopNumber = "S" + String(i+1).padStart(3,'0');
+      changed=true;
+    }
+    return u;
+  });
+
+  if(changed) saveUsers(users);
+
+  // For each shop, if no product exists, add real products
+  users.forEach(u=>{
+    if(u.role === 'admin') return;
+    const shopNo = u.shopNumber;
+    const shopProducts = products.filter(p => p.shopNumber === shopNo);
+    if(shopProducts.length === 0){
+      // Determine product category based on shop number
+      const categories = Object.keys(realProductsData);
+      const categoryIndex = parseInt(shopNo.slice(1)) % categories.length;
+      const category = categories[categoryIndex];
+      const categoryProducts = realProductsData[category];
+      
+      // Add 4-6 products from the category
+      const productCount = 4 + Math.floor(Math.random() * 3);
+      for(let i = 0; i < Math.min(productCount, categoryProducts.length); i++){
+        const product = categoryProducts[i];
+        products.push({
+          id: Date.now().toString() + Math.floor(Math.random()*1000),
+          name: product.name,
+          price: product.price,
+          shopNumber: shopNo,
+          category: product.category,
+          description: `High-quality ${product.name.toLowerCase()} available in various sizes and colors.`
+        });
+      }
+    }
+  });
+
+  saveProducts(products);
+})();
+
+// UI helpers
+const el = (id)=>document.getElementById(id);
+
+function refreshAll(){
+  updateDashboardStats();
+  populateShopFilters();
+  renderUsers();
+  renderProducts();
+  renderManageList();
+  renderUserManageList();
+}
+
+function updateDashboardStats() {
+  const users = readUsers().filter(u => u.role !== 'admin');
+  const products = readProducts();
+  const shops = [...new Set(users.map(u => u.shopNumber))];
+  
+  el('totalUsers').textContent = users.length;
+  el('totalProducts').textContent = products.length;
+  el('totalShops').textContent = shops.length;
+}
+
+// Tab Management
+function setupTabs() {
+  const tabs = ['tabDashboard', 'tabUsers', 'tabProducts', 'tabManage', 'tabUserManage'];
+  const views = ['dashboardView', 'usersView', 'productsView', 'manageView', 'userManageView'];
+  
+  tabs.forEach((tabId, index) => {
+    el(tabId).onclick = () => {
+      // Hide all views and remove active class from all tabs
+      views.forEach(view => el(view).style.display = 'none');
+      tabs.forEach(t => el(t).classList.remove('active'));
+      
+      // Show selected view and set active tab
+      el(views[index]).style.display = 'block';
+      el(tabId).classList.add('active');
+    };
+  });
+}
+
+function showView(viewName) {
+  const tabs = ['tabDashboard', 'tabUsers', 'tabProducts', 'tabManage', 'tabUserManage'];
+  const views = ['dashboardView', 'usersView', 'productsView', 'manageView', 'userManageView'];
+  
+  const viewIndex = views.indexOf(viewName);
+  if (viewIndex !== -1) {
+    // Hide all views and remove active class from all tabs
+    views.forEach(view => el(view).style.display = 'none');
+    tabs.forEach(t => el(t).classList.remove('active'));
+    
+    // Show selected view and set active tab
+    el(views[viewIndex]).style.display = 'block';
+    el(tabs[viewIndex]).classList.add('active');
+  }
+}
+
+// Render functions
+function renderUsers(){
+  const users = readUsers().filter(u=>u.role!=='admin');
+  const list = el('userList');
+  const q = el('searchUser').value.trim().toLowerCase();
+  list.innerHTML = users.filter(u=>{
+    if(!q) return true;
+    return (u.name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q) || (u.shopNumber||'').toLowerCase().includes(q);
+  }).map(u=>{
+    const userProducts = readProducts().filter(p => p.shopNumber === u.shopNumber);
+    return `<div class="card">
+      <div class="card-header">
+        <h3>${u.name||'Unnamed'} <span class="user-role role-user">MERCHANT</span></h3>
+      </div>
+      <div class="card-body">
+        <div class="meta">
+          <strong><i class="fas fa-envelope"></i> Email:</strong> ${u.email}<br>
+          <strong><i class="fas fa-store"></i> Shop No:</strong> ${u.shopNumber||'N/A'}<br>
+          <strong><i class="fas fa-cube"></i> Products:</strong> ${userProducts.length} items<br>
+          <strong><i class="fas fa-calendar"></i> Joined:</strong> ${new Date(u.createdAt).toLocaleDateString()}
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary" onclick="adminViewProducts('${u.shopNumber}')">
+            <i class="fas fa-eye"></i> View Products
+          </button>
+          <button class="btn btn-success" onclick="adminPrefillProducts('${u.shopNumber}')">
+            <i class="fas fa-plus"></i> Add Products
+          </button>
+          <button class="btn btn-warning" onclick="editUser('${u.email}')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function populateShopFilters(){
+  const users = readUsers().filter(u=>u.role!=='admin');
+  const filter = el('filterShop');
+  const manageShop = el('manageProductShop');
+  filter.innerHTML = '<option value="">All Shops</option>';
+  manageShop.innerHTML = '<option value="">Select Shop</option>';
+  users.forEach(u=>{
+    const opt = document.createElement('option');
+    opt.value = u.shopNumber;
+    opt.textContent = `${u.shopNumber} — ${u.name}`;
+    filter.appendChild(opt);
+    const opt2 = opt.cloneNode(true);
+    manageShop.appendChild(opt2);
+  });
+}
+
+function renderProducts(){
+  const all = readProducts();
+  const shopFilter = el('filterShop').value;
+  const q = el('searchProduct').value.trim().toLowerCase();
+  const list = el('productList');
+  const products = all.filter(p=>{
+    if(shopFilter && p.shopNumber!==shopFilter) return false;
+    if(!q) return true;
+    return (p.name||'').toLowerCase().includes(q) || (p.shopNumber||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q);
+  });
+  if(products.length===0){
+    list.innerHTML = '<div class="card"><div class="card-body"><p style="text-align: center; color: var(--gray);">No products found.</p></div></div>';
+    return;
+  }
+  list.innerHTML = products.map(p=>{
+    const categoryBadge = p.category ? `<span class="category-badge">${p.category}</span>` : '';
+    return `<div class="card">
+      <div class="card-header">
+        <h3>${p.name} ${categoryBadge}</h3>
+      </div>
+      <div class="card-body">
+        <div class="meta">
+          <strong><i class="fas fa-store"></i> Shop:</strong> ${p.shopNumber}<br>
+          <strong><i class="fas fa-tag"></i> Price:</strong> ₹${p.price}<br>
+          ${p.description ? `<strong><i class="fas fa-info-circle"></i> Description:</strong> ${p.description}<br>` : ''}
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-warning" onclick="manageEditProduct('${p.id}')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-danger" onclick="adminDeleteProduct('${p.id}')">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Manage list (side)
+function renderManageList(){
+  const products = readProducts();
+  const cont = el('manageList');
+  cont.innerHTML = products.map(p=>{
+    const categoryBadge = p.category ? `<span class="category-badge">${p.category}</span>` : '';
+    return `
+    <div class="manage-item">
+      <strong>${p.name} ${categoryBadge}</strong>
+      <div class="meta">Shop: ${p.shopNumber} — ₹${p.price}</div>
+      <div class="card-actions">
+        <button class="btn btn-warning" onclick="manageEditProduct('${p.id}')">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn btn-danger" onclick="adminDeleteProduct('${p.id}')">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  `}).join('');
+}
+
+// Manage product form
+el('productForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const id = el('manageProductId').value;
+  const name = el('manageProductName').value.trim();
+  const price = el('manageProductPrice').value.trim();
+  const shopNo = el('manageProductShop').value;
+  const category = el('manageProductCategory').value.trim();
+  const description = el('manageProductDescription').value.trim();
+
+  if(!name || !price || !shopNo){
+    showToast('Please fill product name, price and shop selection.', 'error');
+    return;
+  }
+
+  let products = readProducts();
+  if(id){
+    const idx = products.findIndex(p=>p.id===id);
+    if(idx!==-1){
+      products[idx].name = name;
+      products[idx].price = price;
+      products[idx].shopNumber = shopNo;
+      products[idx].category = category;
+      products[idx].description = description;
+      showToast('Product updated successfully!');
+    }
+  } else {
+    products.push({
+      id: Date.now().toString() + Math.floor(Math.random()*1000),
+      name, 
+      price, 
+      shopNumber: shopNo, 
+      category,
+      description,
+      createdAt: new Date().toISOString()
+    });
+    showToast('Product created successfully!');
+  }
+  saveProducts(products);
+  clearManageForm();
+  refreshAll();
+});
+
+// Clear manage form
+function clearManageForm(){
+  el('manageProductId').value='';
+  el('manageProductName').value='';
+  el('manageProductPrice').value='';
+  el('manageProductCategory').value='';
+  el('manageProductDescription').value='';
+  el('manageProductShop').selectedIndex = 0;
+}
+
+// Edit product (populate form)
+function manageEditProduct(id){
+  const p = readProducts().find(x=>x.id===id);
+  if(!p) return showToast('Product not found.', 'error');
+  el('manageProductId').value = p.id;
+  el('manageProductName').value = p.name;
+  el('manageProductPrice').value = p.price;
+  el('manageProductCategory').value = p.category || '';
+  el('manageProductDescription').value = p.description || '';
+  // select shop
+  const shopSelect = el('manageProductShop');
+  for(let i=0;i<shopSelect.options.length;i++){
+    if(shopSelect.options[i].value === p.shopNumber){
+      shopSelect.selectedIndex = i; break;
+    }
+  }
+  // move to Manage tab
+  showView('manageView');
+}
+
+// Admin delete product
+function adminDeleteProduct(id){
+  if(!confirm('Delete product permanently?')) return;
+  let products = readProducts();
+  products = products.filter(p=>p.id!==id);
+  saveProducts(products);
+  showToast('Product deleted successfully!');
+  refreshAll();
+}
+
+// Admin: view products of a shop
+function adminViewProducts(shopNo){
+  el('filterShop').value = shopNo;
+  showView('productsView');
+  renderProducts();
+}
+
+// Admin: add real sample products to a shop
+function adminPrefillProducts(shopNo){
+  if(!confirm('Add real products to ' + shopNo + '?')) return;
+  let products = readProducts();
+  
+  // Determine product category based on shop number
+  const categories = Object.keys(realProductsData);
+  const categoryIndex = parseInt(shopNo.slice(1)) % categories.length;
+  const category = categories[categoryIndex];
+  const categoryProducts = realProductsData[category];
+  
+  // Add 3 products from the category
+  for(let i = 0; i < Math.min(3, categoryProducts.length); i++){
+    const product = categoryProducts[i];
+    products.push({
+      id: Date.now().toString() + Math.floor(Math.random()*1000),
+      name: product.name,
+      price: product.price,
+      shopNumber: shopNo,
+      category: product.category,
+      description: `High-quality ${product.name.toLowerCase()} available in store.`,
+      createdAt: new Date().toISOString()
+    });
+  }
+  
+  saveProducts(products);
+  showToast('Real products added to shop ' + shopNo);
+  refreshAll();
+}
+
+// User Management Functions
+function renderUserManageList() {
+  const users = readUsers();
+  const cont = el('userManageList');
+  cont.innerHTML = users.map(u => {
+    const roleClass = u.role === 'admin' ? 'role-admin' : 'role-user';
+    const roleText = u.role === 'admin' ? 'ADMIN' : 'MERCHANT';
+    return `
+    <div class="manage-item">
+      <strong>${u.name} <span class="user-role ${roleClass}">${roleText}</span></strong>
+      <div class="meta">
+        Email: ${u.email}<br>
+        ${u.shopNumber ? `Shop: ${u.shopNumber}<br>` : ''}
+        Joined: ${new Date(u.createdAt).toLocaleDateString()}
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-warning" onclick="editUser('${u.email}')">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        ${u.role !== 'admin' ? `<button class="btn btn-danger" onclick="deleteUser('${u.email}')">
+          <i class="fas fa-trash"></i> Delete
+        </button>` : ''}
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+// User form handling
+el('userForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const id = el('manageUserId').value;
+  const name = el('manageUserName').value.trim();
+  const email = el('manageUserEmail').value.trim();
+  const shopNumber = el('manageUserShop').value.trim().toUpperCase();
+  const password = el('manageUserPassword').value;
+  const role = el('manageUserRole').value;
+
+  if (!name || !email || !shopNumber || !password) {
+    showToast('Please fill all required fields.', 'error');
+    return;
+  }
+
+  // Validate shop number format for non-admin users
+  if (role === 'user' && !shopNumber.match(/^S\d{3}$/)) {
+    showToast('Shop number must be in format S001, S002, etc.', 'error');
+    return;
+  }
+
+  let users = readUsers();
+  
+  if (id) {
+    // Edit existing user
+    const idx = users.findIndex(u => u.email === id);
+    if (idx !== -1) {
+      users[idx].name = name;
+      users[idx].email = email;
+      users[idx].shopNumber = role === 'admin' ? 'ADMIN' : shopNumber;
+      users[idx].role = role;
+      if (password) {
+        users[idx].password = password;
+      }
+      showToast('User updated successfully!');
+    }
+  } else {
+    // Create new user - check for duplicates
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+      showToast('User with this email already exists.', 'error');
+      return;
+    }
+
+    const existingShop = users.find(u => u.shopNumber === shopNumber && role === 'user');
+    if (existingShop) {
+      showToast('Shop number is already taken.', 'error');
+      return;
+    }
+
+    const newUser = {
+      uid: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+      name,
+      email,
+      password,
+      shopNumber: role === 'admin' ? 'ADMIN' : shopNumber,
+      role,
+      createdAt: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    showToast('User created successfully!');
+  }
+
+  saveUsers(users);
+  clearUserForm();
+  refreshAll();
+});
+
+function clearUserForm() {
+  el('manageUserId').value = '';
+  el('manageUserName').value = '';
+  el('manageUserEmail').value = '';
+  el('manageUserShop').value = '';
+  el('manageUserPassword').value = '';
+  el('manageUserRole').value = 'user';
+}
+
+function editUser(email) {
+  const users = readUsers();
+  const user = users.find(u => u.email === email);
+  if (!user) return showToast('User not found.', 'error');
+
+  el('manageUserId').value = user.email;
+  el('manageUserName').value = user.name;
+  el('manageUserEmail').value = user.email;
+  el('manageUserShop').value = user.shopNumber;
+  el('manageUserPassword').value = '';
+  el('manageUserRole').value = user.role;
+
+  showView('userManageView');
+}
+
+function deleteUser(email) {
+  if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+  
+  let users = readUsers();
+  users = users.filter(u => u.email !== email);
+  saveUsers(users);
+  
+  // Also remove user's products
+  let products = readProducts();
+  const user = users.find(u => u.email === email);
+  if (user && user.shopNumber) {
+    products = products.filter(p => p.shopNumber !== user.shopNumber);
+    saveProducts(products);
+  }
+  
+  showToast('User deleted successfully!');
+  refreshAll();
+}
+
+// Toast notification system
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+    <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add('show'), 100);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Initialize filter listeners
+el('filterShop').addEventListener('change', renderProducts);
+el('searchProduct').addEventListener('input', renderProducts);
+el('searchUser').addEventListener('input', renderUsers);
+
+// Initialize the application
+setupTabs();
+refreshAll();
+</script>
+</body>
+</html>

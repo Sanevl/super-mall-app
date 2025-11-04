@@ -1,0 +1,24 @@
+{
+    "name": "super-mall-app",
+    "version": "1.0.0",
+    "description": "Super Mall Web Application - Internship Project",
+    "main": "public/index.html",
+    "scripts": {
+      "start": "live-server public --port=3000 --open",
+      "dev": "live-server public --port=3000",
+      "serve": "python -m http.server 8000 --directory public",
+      "demo": "echo 'Open public/index.html in your browser'"
+    },
+    "keywords": [
+      "javascript",
+      "firebase-mock",
+      "localStorage",
+      "mall-management",
+      "internship-project"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "devDependencies": {
+      "live-server": "^1.2.2"
+    }
+  }

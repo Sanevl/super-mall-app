@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Shop - Super Mall</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --primary-light: #8b5cf6;
+      --secondary: #06d6a0;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --gray-light: #cbd5e1;
+      --gray-lighter: #f1f5f9;
+      --white: #ffffff;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    header h1 i {
+      font-size: 24px;
+    }
+    
+    .logout-btn {
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--white);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--white);
+    }
+    
+    .stat-icon.products { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+    .stat-icon.sales { background: linear-gradient(135deg, #06d6a0, #0ea5e9); }
+    .stat-icon.revenue { background: linear-gradient(135deg, #f59e0b, #f97316); }
+    .stat-icon.views { background: linear-gradient(135deg, #ef4444, #ec4899); }
+    
+    .stat-info h3 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 4px 0 0 0;
+    }
+    
+    .view {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .view-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-lighter);
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    }
+    
+    .view-header h2 {
+      margin: 0;
+      color: var(--dark);
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .user-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 24px;
+    }
+    
+    .info-card {
+      background: var(--gray-lighter);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .info-card h3 {
+      margin: 0 0 12px 0;
+      color: var(--dark);
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .info-card p {
+      margin: 0;
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .info-card strong {
+      color: var(--dark);
+    }
+    
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 24px;
+    }
+    
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid var(--gray-lighter);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .card-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-bottom: 1px solid var(--gray-lighter);
+    }
+    
+    .card-header h3 {
+      margin: 0;
+      color: var(--dark);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .meta {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    
+    .meta strong {
+      color: var(--dark);
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .form-section {
+      background: var(--gray-lighter);
+      padding: 24px;
+      border-radius: 12px;
+      margin: 24px;
+    }
+    
+    .form-section h3 {
+      margin: 0 0 20px 0;
+      color: var(--dark);
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .form-col {
+      flex: 1;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-light);
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--white);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: var(--white);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger), #dc2626);
+      color: var(--white);
+    }
+    
+    .btn-warning {
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      color: var(--white);
+    }
+    
+    .category-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+    
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .empty-state h3 {
+      margin: 0 0 8px 0;
+      color: var(--dark);
+    }
+    
+    .empty-state p {
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      background: var(--success);
+      color: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .toast.show { transform: translateX(0); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); }
+    
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-store-alt"></i> My Shop Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </header>
+
+  <div class="container">
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <div class="stat-icon products">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Total Products</h3>
+          <div class="stat-number" id="totalProducts">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon sales">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Today's Sales</h3>
+          <div class="stat-number">₹2,458</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon revenue">
+          <i class="fas fa-rupee-sign"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Monthly Revenue</h3>
+          <div class="stat-number">₹24,850</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon views">
+          <i class="fas fa-eye"></i>
+        </div>
+        <div class="stat-info">
+          <h3>Product Views</h3>
+          <div class="stat-number">1,248</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Information -->
+    <div class="view">
+      <div class="view-header">
+        <h2><i class="fas fa-user-circle"></i> Shop Information</h2>
+      </div>
+      <div class="user-info-grid">
+        <div class="info-card">
+          <h3><i class="fas fa-store"></i> Shop Details</h3>
+          <p><strong>Shop Number:</strong> <span id="shopNo">S001</span></p>
+          <p><strong>Merchant Name:</strong> <span id="userName">John Doe</span></p>
+          <p><strong>Email:</strong> <span id="userEmail">john@example.com</span></p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-chart-bar"></i> Performance</h3>
+          <p><strong>Total Products:</strong> <span id="performanceProducts">0</span></p>
+          <p><strong>Active Listings:</strong> <span id="activeListings">0</span></p>
+          <p><strong>Shop Rating:</strong> ⭐⭐⭐⭐⭐ (4.8)</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-bullhorn"></i> Quick Actions</h3>
+          <p>• Add new products to increase visibility</p>
+          <p>• Update pricing for better sales</p>
+          <p>• Manage your product inventory</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="view">
+      <div class="view-header">
+        <h2><i class="fas fa-shopping-bag"></i> My Products</h2>
+      </div>
+      <div id="productList" class="card-grid">
+        <!-- Products will be dynamically loaded here -->
+      </div>
+    </div>
+
+    <!-- Add/Edit Product Form -->
+    <div class="view">
+      <div class="view-header">
+        <h2 id="formTitle"><i class="fas fa-plus-circle"></i> Add New Product</h2>
+      </div>
+      <div class="form-section">
+        <form id="addProductForm">
+          <input type="hidden" id="productId" />
+          <div class="form-row">
+            <div class="form-col">
+              <input type="text" class="form-input" id="productName" placeholder="Product Name *" required />
+            </div>
+            <div class="form-col">
+              <input type="number" class="form-input" id="productPrice" placeholder="Price (₹) *" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <input type="text" class="form-input" id="productCategory" placeholder="Category (e.g., Electronics, Clothing)" />
+            </div>
+            <div class="form-col">
+              <textarea class="form-input" id="productDescription" placeholder="Product Description" rows="3"></textarea>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px; margin-top: 20px;">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save"></i> Save Product
+            </button>
+            <button type="button" class="btn btn-warning" onclick="clearForm()">
+              <i class="fas fa-times"></i> Clear Form
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Authentication check
+(function checkAuth() {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  if (!loggedInUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  const user = JSON.parse(loggedInUser);
+  if (user.role === 'admin') {
+    window.location.href = 'sampleDataView.html';
+    return;
+  }
+})();
+
+let loggedUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+function readUsers(){ 
+  return JSON.parse(localStorage.getItem('mockUsers')) || []; 
+}
+function saveUsers(u){ 
+  localStorage.setItem('mockUsers', JSON.stringify(u)); 
+}
+function readProducts(){ 
+  return JSON.parse(localStorage.getItem('mockProducts')) || []; 
+}
+function saveProducts(p){ 
+  localStorage.setItem('mockProducts', JSON.stringify(p)); 
+}
+
+// Ensure user exists and has shopNumber
+(function ensureUserShop(){
+  let users = readUsers();
+  let idx = users.findIndex(u => u.email === loggedUser.email);
+  if(idx === -1){
+    // If user missing in mockUsers, re-add them with same details
+    users.push(loggedUser);
+    idx = users.length - 1;
+    saveUsers(users);
+  }
+  // update loggedUser with possibly new shopNumber
+  loggedUser = users[idx];
+  localStorage.setItem('loggedInUser', JSON.stringify(loggedUser));
+})();
+
+// Display user info
+document.getElementById('userName').textContent = loggedUser.name || loggedUser.email;
+document.getElementById('shopNo').textContent = loggedUser.shopNumber;
+document.getElementById('userEmail').textContent = loggedUser.email;
+
+let products = readProducts();
+
+function updateDashboardStats() {
+  const myProducts = products.filter(p => p.shopNumber === loggedUser.shopNumber);
+  const activeProducts = myProducts.filter(p => !p.status || p.status === 'active');
+  
+  document.getElementById('totalProducts').textContent = myProducts.length;
+  document.getElementById('performanceProducts').textContent = myProducts.length;
+  document.getElementById('activeListings').textContent = activeProducts.length;
+}
+
+function renderProducts(){
+  products = readProducts(); // reload fresh to reflect admin changes
+  const list = document.getElementById('productList');
+  const myProducts = products.filter(p => p.shopNumber === loggedUser.shopNumber);
+  
+  if(myProducts.length === 0){
+    list.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>No Products Yet</h3>
+        <p>Start by adding your first product using the form below.</p>
+        <button class="btn btn-primary" style="margin-top: 16px;" onclick="document.getElementById('productName').focus()">
+          <i class="fas fa-plus"></i> Add Your First Product
+        </button>
+      </div>
+    `;
+    return;
+  }
+  
+  list.innerHTML = myProducts.map(p => {
+    const categoryBadge = p.category ? `<span class="category-badge">${p.category}</span>` : '';
+    const description = p.description ? `<p style="margin: 8px 0; font-size: 13px; color: var(--gray);">${p.description}</p>` : '';
+    
+    return `<div class="card">
+      <div class="card-header">
+        <h3>${p.name} ${categoryBadge}</h3>
+      </div>
+      <div class="card-body">
+        <div class="meta">
+          <strong><i class="fas fa-tag"></i> Price:</strong> ₹${p.price}<br>
+          <strong><i class="fas fa-calendar"></i> Added:</strong> ${new Date(p.createdAt).toLocaleDateString()}
+          ${description}
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-warning" onclick="editProduct('${p.id}')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('addProductForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const id = document.getElementById('productId').value;
+  const name = document.getElementById('productName').value.trim();
+  const price = document.getElementById('productPrice').value.trim();
+  const category = document.getElementById('productCategory').value.trim();
+  const description = document.getElementById('productDescription').value.trim();
+  
+  if(!name || !price){ 
+    showToast('Please enter product name and price.', 'error');
+    return; 
+  }
+  
+  products = readProducts();
+  if(id){
+    // Edit existing product
+    const idx = products.findIndex(p => p.id === id);
+    if(idx !== -1){
+      products[idx].name = name;
+      products[idx].price = parseInt(price);
+      products[idx].category = category;
+      products[idx].description = description;
+      products[idx].updatedAt = new Date().toISOString();
+      showToast('Product updated successfully!');
+    }
+  } else {
+    // Add new product
+    products.push({
+      id: Date.now().toString() + Math.floor(Math.random()*1000),
+      name, 
+      price: parseInt(price), 
+      category,
+      description,
+      shopNumber: loggedUser.shopNumber,
+      createdAt: new Date().toISOString(),
+      status: 'active'
+    });
+    showToast('Product added successfully!');
+  }
+  saveProducts(products);
+  clearForm();
+  updateDashboardStats();
+  renderProducts();
+});
+
+function editProduct(id){
+  products = readProducts();
+  const p = products.find(x => x.id === id);
+  if(!p) return showToast('Product not found', 'error');
+  
+  document.getElementById('productId').value = p.id;
+  document.getElementById('productName').value = p.name;
+  document.getElementById('productPrice').value = p.price;
+  document.getElementById('productCategory').value = p.category || '';
+  document.getElementById('productDescription').value = p.description || '';
+  document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Product';
+  
+  // Scroll to form
+  document.getElementById('addProductForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteProduct(id){
+  if(!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+  
+  products = readProducts().filter(p => p.id !== id);
+  saveProducts(products);
+  showToast('Product deleted successfully!');
+  updateDashboardStats();
+  renderProducts();
+}
+
+function clearForm(){
+  document.getElementById('productId').value = '';
+  document.getElementById('productName').value = '';
+  document.getElementById('productPrice').value = '';
+  document.getElementById('productCategory').value = '';
+  document.getElementById('productDescription').value = '';
+  document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Product';
+  updateDashboardStats();
+  renderProducts();
+}
+
+function logout(){
+  localStorage.removeItem('loggedInUser');
+  window.location.href='login.html';
+}
+
+// Toast notification system
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+    <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add('show'), 100);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Initialize the dashboard
+updateDashboardStats();
+renderProducts();
+
+// Watch for storage changes (for real-time updates if admin makes changes)
+window.addEventListener('storage', function(e){
+  if(e.key === 'mockProducts'){
+    updateDashboardStats();
+    renderProducts();
+  }
+});
+
+// Add some sample products if this is a new user
+(function initializeSampleProducts() {
+  const myProducts = products.filter(p => p.shopNumber === loggedUser.shopNumber);
+  if (myProducts.length === 0) {
+    // Add welcome message and suggest adding products
+    console.log('New user detected - no products found');
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Super Mall</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { background: #dc3545; }
+        .toast.warning { background: #ffc107; color: #000; }
+    </style>
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; flex-direction: column;">
+        <!-- Modern Header -->
+        <header class="header">
+            <nav class="navbar container">
+                <div class="logo">SuperMall</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Register Section -->
+        <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 0;">
+            <div class="container">
+                <div style="max-width: 440px; margin: 0 auto;">
+                    <!-- Register Card -->
+                    <div class="card" style="padding: 3rem;">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Create Account</h1>
+                            <p style="color: var(--gray);">Join Super Mall as a merchant</p>
+                        </div>
+
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" class="form-input" id="name" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Shop Number *</label>
+                                <input type="text" class="form-input" id="shopNumber" placeholder="e.g., S001, S002" required>
+                                <small style="color: var(--gray); font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                                    Format: S followed by 3 digits (S001, S002, etc.)
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Password *</label>
+                                <input type="password" class="form-input" id="password" placeholder="Create a password (min. 6 characters)" required minlength="6">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password *</label>
+                                <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm your password" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Role</label>
+                                <select class="form-select" id="role">
+                                    <option value="user">Merchant</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                                <span>Create Account</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--gray-light);">
+                            <p style="color: var(--gray); margin-bottom: 1rem;">Already have an account?</p>
+                            <a href="login.html" class="btn btn-secondary" style="width: 100%;">
+                                Sign In Instead
+                            </a>
+                        </div>
+
+                        <!-- Demo Credentials -->
+                        <div class="card" style="background: var(--gray-lighter); margin-top: 2rem; padding: 1.5rem;">
+                            <h4 style="margin-bottom: 1rem; color: var(--dark);">Demo Credentials</h4>
+                            <div style="font-size: 0.875rem;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong>Admin Account:</strong><br>
+                                    Email: admin@supermall.com<br>
+                                    Password: admin123
+                                </div>
+                                <div>
+                                    <strong>User Login:</strong><br>
+                                    Use email OR shop number + password
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Registration function
+        function registerUser(userData) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    try {
+                        // Get existing users or initialize empty array
+                        const users = JSON.parse(localStorage.getItem('mockUsers')) || [];
+                        
+                        // Validate required fields
+                        if (!userData.email || !userData.password || !userData.shopNumber || !userData.name) {
+                            reject(new Error('All fields are required'));
+                            return;
+                        }
+
+                        // Validate email format
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(userData.email)) {
+                            reject(new Error('Please enter a valid email address'));
+                            return;
+                        }
+
+                        // Validate shop number format
+                        const shopRegex = /^S\d{3}$/;
+                        if (!shopRegex.test(userData.shopNumber)) {
+                            reject(new Error('Shop number must be in format S001, S002, etc. (S followed by 3 digits)'));
+                            return;
+                        }
+
+                        // Validate password length
+                        if (userData.password.length < 6) {
+                            reject(new Error('Password must be at least 6 characters long'));
+                            return;
+                        }
+
+                        // Check for duplicate email
+                        const existingEmail = users.find(u => u.email && u.email.toLowerCase() === userData.email.toLowerCase());
+                        if (existingEmail) {
+                            reject(new Error('Email address is already registered'));
+                            return;
+                        }
+
+                        // Check for duplicate shop number
+                        const existingShop = users.find(u => u.shopNumber && u.shopNumber === userData.shopNumber);
+                        if (existingShop) {
+                            reject(new Error('Shop number is already taken'));
+                            return;
+                        }
+
+                        // Create new user object
+                        const newUser = {
+                            uid: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                            email: userData.email,
+                            password: userData.password,
+                            shopNumber: userData.shopNumber,
+                            name: userData.name,
+                            role: userData.role || 'user',
+                            createdAt: new Date().toISOString(),
+                            lastLogin: null
+                        };
+
+                        // Add to users array
+                        users.push(newUser);
+                        
+                        // Save to localStorage
+                        localStorage.setItem('mockUsers', JSON.stringify(users));
+                        
+                        console.log('User registered successfully:', newUser);
+                        resolve({ success: true, user: newUser });
+                        
+                    } catch (error) {
+                        console.error('Registration error:', error);
+                        reject(new Error('Registration failed: ' + error.message));
+                    }
+                }, 1000);
+            });
+        }
+
+        // Initialize default admin user if not exists
+        function initializeDefaultAdmin() {
+            const users = JSON.parse(localStorage.getItem('mockUsers')) || [];
+            const adminExists = users.find(u => u.email === 'admin@supermall.com');
+            
+            if (!adminExists) {
+                users.push({
+                    uid: 'admin_001',
+                    name: 'Super Admin',
+                    email: 'admin@supermall.com',
+                    password: 'admin123',
+                    role: 'admin',
+                    shopNumber: 'ADMIN',
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
+                });
+                localStorage.setItem('mockUsers', JSON.stringify(users));
+                console.log('Default admin user created');
+            }
+        }
+
+        // Initialize sample products data if not exists
+        function initializeSampleProducts() {
+            if (!localStorage.getItem('mockProducts')) {
+                const sampleProducts = [
+                    {
+                        id: 'prod_1',
+                        name: "Men's Cotton T-Shirt",
+                        price: 599,
+                        shopNumber: 'S001',
+                        category: 'clothing',
+                        extra: 'Available in multiple colors'
+                    },
+                    {
+                        id: 'prod_2', 
+                        name: "Wireless Bluetooth Earbuds",
+                        price: 1999,
+                        shopNumber: 'S002',
+                        category: 'electronics',
+                        extra: 'Noise cancellation'
+                    }
+                ];
+                localStorage.setItem('mockProducts', JSON.stringify(sampleProducts));
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const shopNumber = document.getElementById('shopNumber').value.trim().toUpperCase();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('role').value;
+            
+            const button = e.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<div class="loading"></div> Creating Account...';
+            button.disabled = true;
+
+            try {
+                // Validate passwords match
+                if (password !== confirmPassword) {
+                    throw new Error('Passwords do not match');
+                }
+
+                // Register user
+                const result = await registerUser({
+                    name,
+                    email,
+                    shopNumber,
+                    password,
+                    role
+                });
+
+                if (result.success) {
+                    showToast('Account created successfully! Redirecting...', 'success');
+                    
+                    // Store the newly registered user as logged in
+                    localStorage.setItem('loggedInUser', JSON.stringify(result.user));
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        if (result.user.role === 'admin') {
+                            window.location.href = 'sampleDataView.html';
+                        } else {
+                            window.location.href = 'user-dashboard.html';
+                        }
+                    }, 2000);
+                }
+            } catch (error) {
+                showToast(error.message, 'error');
+                console.error('Registration error:', error);
+            } finally {
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+
+        // Real-time shop number validation
+        document.getElementById('shopNumber').addEventListener('input', function(e) {
+            const value = e.target.value.toUpperCase();
+            const shopRegex = /^S\d{0,3}$/;
+            
+            if (value && !shopRegex.test(value)) {
+                e.target.style.borderColor = '#dc3545';
+            } else {
+                e.target.style.borderColor = '';
+            }
+        });
+
+        // Real-time password confirmation validation
+        document.getElementById('confirmPassword').addEventListener('input', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = e.target.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                e.target.style.borderColor = '#dc3545';
+            } else {
+                e.target.style.borderColor = '';
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Initialize default data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDefaultAdmin();
+            initializeSampleProducts();
+            console.log('Registration page initialized');
+        });
+    </script>
+</body>
+</html>

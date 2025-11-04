@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Super Mall</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; flex-direction: column;">
+        <!-- Modern Header -->
+        <header class="header">
+            <nav class="navbar container">
+                <div class="logo">SuperMall</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Login Section -->
+        <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 0;">
+            <div class="container">
+                <div style="max-width: 440px; margin: 0 auto;">
+                    <!-- Login Card -->
+                    <div class="card" style="padding: 3rem;">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Welcome Back</h1>
+                            <p style="color: var(--gray);">Sign in with email OR shop number</p>
+                        </div>
+
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label class="form-label">Email or Shop Number</label>
+                                <input type="text" class="form-input" id="identifier" placeholder="Enter email or shop number (S001)" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                                <span>Sign In</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--gray-light);">
+                            <p style="color: var(--gray); margin-bottom: 1rem;">Don't have an account?</p>
+                            <a href="register.html" class="btn btn-secondary" style="width: 100%;">
+                                Create New Account
+                            </a>
+                        </div>
+
+                        <!-- Demo Credentials -->
+                        <div class="card" style="background: var(--gray-lighter); margin-top: 2rem; padding: 1.5rem;">
+                            <h4 style="margin-bottom: 1rem; color: var(--dark);">Demo Credentials</h4>
+                            <div style="font-size: 0.875rem;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong>Admin:</strong> admin@supermall.com / admin123
+                                </div>
+                                <div>
+                                    <strong>User:</strong> Use email OR shop number + password
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple authentication system for login
+        function authenticate(identifier, password) {
+            const users = JSON.parse(localStorage.getItem('mockUsers')) || [];
+            
+            // Find user by email or shop number
+            const user = users.find(u => 
+                (u.email && u.email.toLowerCase() === identifier.toLowerCase()) ||
+                (u.shopNumber && u.shopNumber === identifier.toUpperCase())
+            );
+
+            if (!user) {
+                return { success: false, error: 'User not found' };
+            }
+
+            if (user.password !== password) {
+                return { success: false, error: 'Invalid password' };
+            }
+
+            return { success: true, user: user };
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
+            const button = e.target.querySelector('button[type="submit"]');
+            
+            // Show loading state
+            const originalText = button.innerHTML;
+            button.innerHTML = '<div class="loading"></div> Signing In...';
+            button.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                const result = authenticate(identifier, password);
+                
+                // Restore button state
+                button.innerHTML = originalText;
+                button.disabled = false;
+                
+                if (result.success) {
+                    // Store logged in user
+                    localStorage.setItem('loggedInUser', JSON.stringify(result.user));
+                    
+                    // Redirect based on role
+                    if (result.user.role === 'admin') {
+                        window.location.href = 'sampleDataView.html';
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                } else {
+                    showToast('Login failed: ' + result.error, 'error');
+                }
+            }, 1000);
+        });
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Initialize default admin user if not exists
+        (function initializeAdmin() {
+            const users = JSON.parse(localStorage.getItem('mockUsers')) || [];
+            if (!users.find(u => u.email === 'admin@supermall.com')) {
+                users.push({
+                    uid: 'admin_001',
+                    name: 'Super Admin',
+                    email: 'admin@supermall.com',
+                    password: 'admin123',
+                    role: 'admin',
+                    shopNumber: 'ADMIN',
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('mockUsers', JSON.stringify(users));
+            }
+        })();
+    </script>
+
+    <style>
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { background: #dc3545; }
+    </style>
+</body>
+</html>
